@@ -10,7 +10,7 @@ const omnichannelConfig = fetchOmnichannelConfig('AuthenticatedChatWithAttachmen
 const authUrl = fetchAuthUrl('AuthenticatedChatWithAttachments');
 
 test.describe('AuthenticatedChat @AuthenticatedChatWithAttachments', () => {
-    test.only('ChatSDK.uploadFileAttachment() should upload attachment to the attachment service & send a message with the metadata', async ({ page }) => {
+    test('ChatSDK.uploadFileAttachment() should upload attachment to the attachment service & send a message with the metadata', async ({ page }) => {
         await page.goto(testPage);
 
         console.log(testPage);
