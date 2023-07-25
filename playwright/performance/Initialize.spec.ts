@@ -9,6 +9,8 @@ const omnichannelConfig = fetchOmnichannelConfig('UnauthenticatedChat');
 test.describe('Performance @Performance ', () => {
     test('ChatSDK.initialize()', async ({ page }) => {
         await page.goto(testPage);
+        console.log(testPage);
+        console.log(omnichannelConfig);
         
         let [response, runtimeContext ] = await Promise.all([
             page.waitForResponse(response => {
