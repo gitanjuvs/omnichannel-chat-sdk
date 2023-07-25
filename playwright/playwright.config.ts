@@ -35,7 +35,7 @@ const config: PlaywrightTestConfig = {
     screenshot: "only-on-failure",
     video: "retain-on-failure",
     launchOptions: {
-      slowMo: 50
+      slowMo: parseInt(process.env.PLAYWRIGHT_SLOW_MO || 1000)
     }
   },
   projects: [

@@ -3,14 +3,30 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [1.4.2] - 2023-05-19
+## [1.4.4] - 2023-07-19
+### Added
+- Add `tokenRefresher` mechanism to retrieve chat token on expiry
 
+### Changed
+- Add `ocSDKConfiguration` to reduce `chatToken` retries to 2
+- Uptake [@microsoft/ocsdk@0.4.0](https://www.npmjs.com/package/@microsoft/ocsdk/v/0.4.0)
+- Remove redundant call to create of `participantsMapping`
+
+### Fixed
+- Set `enableSenderDisplayNameInTypingNotification` to true to include display name on sending typing notification
+- Add `async` to `ChatSDK.getLiveChatTranscript()` internal call
+
+## [1.4.3] - 2023-06-15
+### Fixed
+
+- [Perf] Make sessionInit, AcsClientInit/Ic3ClientInit and AmsClientInit calls in parallel
+
+## [1.4.2] - 2023-05-19
 ### Fixed
 
 - Fixed null check on startChat failure
 
 ## [1.4.1] - 2023-05-05
-
 ### Fixed
 
 - Skipped empty string or null context variables (parity with v1)
