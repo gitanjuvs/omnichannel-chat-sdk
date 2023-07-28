@@ -6,7 +6,6 @@ const jUnitTestResults = path.join(outPutDir, "test-results/test-results.xml");
 
 const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
-  testDir: './integrations',
   webServer: [
     {
       command: 'node ./server/app.js',
@@ -44,6 +43,14 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chrome'],
       },
+    },
+    {
+      name: 'integrations',
+      testDir: './integrations'
+    },
+    {
+      name: 'performance',
+      testDir: './performance'
     },
 
     // {
