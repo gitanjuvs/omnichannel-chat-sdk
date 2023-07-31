@@ -2,11 +2,18 @@ import fetchOmnichannelConfig from '../utils/fetchOmnichannelConfig';
 import fetchTestPageUrl from '../utils/fetchTestPageUrl';
 import { test, expect } from '@playwright/test';
 import OmnichannelEndpoints from '../utils/OmnichannelEndpoints';
+import platform, { isBrowser } from '../../src/utils/platform';
 
 const testPage = fetchTestPageUrl();
 const omnichannelConfig = fetchOmnichannelConfig('UnauthenticatedChat');
 
 test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
+
+    test.afterAll(({ }) => {
+
+        expect(platform.isBrowser()).toBe(false);
+
+    });
     test.only('ChatSDK.getConversationDetails() should not fail', async ({ page }) => {
         await page.goto(testPage);
         console.log(testPage);
@@ -41,6 +48,7 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
         const { requestId, conversationDetails } = runtimeContext;
         const liveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        console.log("conversationDetails Status: "+ conversationDetails.state + ", ConversationId: "+ conversationDetails.conversationId+ ", canRenderPostChat: "+ conversationDetails.canRenderPostChat);
         console.log("status:" + liveWorkItemDetailsResponse.status());
         console.log("generated URL:" + liveWorkItemDetailsRequestUrl);
         console.log("request url:"+ liveWorkItemDetailsRequest.url());
@@ -55,7 +63,7 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
         expect(liveWorkItemDetailsResponseDataJson.CanRenderPostChat).toBe(conversationDetails.canRenderPostChat);
     });
 
-    test.only('ChatSDK.getConversationDetails() with liveChatContext should not fail', async ({page}) => {
+    test('ChatSDK.getConversationDetails() with liveChatContext should not fail', async ({page}) => {
         await page.goto(testPage);
         console.log(testPage);
         console.log(omnichannelConfig);
