@@ -10,6 +10,7 @@ const omnichannelConfig = fetchOmnichannelConfig('UnauthenticatedChat');
 test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
     test.only('ChatSDK.getConversationDetails() should not fail', async ({page}) => {
         await page.goto(testPage);
+        console.log(testPage);
         console.log(omnichannelConfig);
 
         const [liveWorkItemDetailsRequest, liveWorkItemDetailsResponse, runtimeContext] = await Promise.all([
@@ -41,6 +42,7 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
         const { requestId, conversationDetails } = runtimeContext;
         const liveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        console.log(liveWorkItemDetailsRequest.url());
         console.log(liveWorkItemDetailsResponse);
         const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
 
