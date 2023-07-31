@@ -41,8 +41,10 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
         const { requestId, conversationDetails } = runtimeContext;
         const liveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
-        // console.log(liveWorkItemDetailsRequest.url());
-        console.log(await liveWorkItemDetailsResponse.json());
+        console.log("status:" + liveWorkItemDetailsResponse.status());
+        console.log("generated URL:" + liveWorkItemDetailsRequestUrl);
+        console.log("request url:"+ liveWorkItemDetailsRequest.url());
+        console.log(liveWorkItemDetailsResponse);
         const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
         console.log(liveWorkItemDetailsResponseDataJson);
 
