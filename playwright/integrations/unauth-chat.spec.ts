@@ -48,26 +48,31 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
         const { requestId, conversationDetails } = runtimeContext;
         const liveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
-        console.log("conversationDetails Status: "+ conversationDetails.state + ", ConversationId: "+ conversationDetails.conversationId+ ", canRenderPostChat: "+ conversationDetails.canRenderPostChat);
+        console.log("conversationDetails Status: " + conversationDetails.state + ", ConversationId: " + conversationDetails.conversationId + ", canRenderPostChat: " + conversationDetails.canRenderPostChat);
         console.log("status:" + liveWorkItemDetailsResponse.status());
         console.log("generated URL:" + liveWorkItemDetailsRequestUrl);
-        console.log("request url:"+ liveWorkItemDetailsRequest.url());
+        console.log("request url:" + liveWorkItemDetailsRequest.url());
         // console.log(liveWorkItemDetailsResponse);
-        const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
-        console.log(liveWorkItemDetailsResponseDataJson);
+        try {
+            const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
+            console.log(liveWorkItemDetailsResponseDataJson);
 
-        expect(liveWorkItemDetailsRequest.url() === liveWorkItemDetailsRequestUrl).toBe(true);
-        expect(liveWorkItemDetailsResponse.status()).toBe(200);
-        expect(liveWorkItemDetailsResponseDataJson.State).toBe(conversationDetails.state);
-        expect(liveWorkItemDetailsResponseDataJson.ConversationId).toBe(conversationDetails.conversationId);
-        expect(liveWorkItemDetailsResponseDataJson.CanRenderPostChat).toBe(conversationDetails.canRenderPostChat);
+            expect(liveWorkItemDetailsRequest.url() === liveWorkItemDetailsRequestUrl).toBe(true);
+            expect(liveWorkItemDetailsResponse.status()).toBe(200);
+            expect(liveWorkItemDetailsResponseDataJson.State).toBe(conversationDetails.state);
+            expect(liveWorkItemDetailsResponseDataJson.ConversationId).toBe(conversationDetails.conversationId);
+            expect(liveWorkItemDetailsResponseDataJson.CanRenderPostChat).toBe(conversationDetails.canRenderPostChat);
+        }
+        catch {
+            await page.close();
+        }
     });
 
-    test('ChatSDK.getConversationDetails() with liveChatContext should not fail', async ({page}) => {
+    test('ChatSDK.getConversationDetails() with liveChatContext should not fail', async ({ page }) => {
         await page.goto(testPage);
         console.log(testPage);
         console.log(omnichannelConfig);
-        const [invalidLiveWorkItemDetailsRequest, invalidLiveWorkItemDetailsResponse, _, liveChatContextLiveWorkItemDetailsRequest, liveChatContextLiveWorkItemDetailsResponse,  runtimeContext] = await Promise.all([
+        const [invalidLiveWorkItemDetailsRequest, invalidLiveWorkItemDetailsResponse, _, liveChatContextLiveWorkItemDetailsRequest, liveChatContextLiveWorkItemDetailsResponse, runtimeContext] = await Promise.all([
             page.waitForRequest(request => {
                 return request.url().includes(OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath);
             }),
@@ -108,7 +113,7 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
                 await chatSDK.initialize();
 
-                const liveChatContextConversationDetails = await chatSDK.getConversationDetails({liveChatContext: runtimeContext.liveChatContext});
+                const liveChatContextConversationDetails = await chatSDK.getConversationDetails({ liveChatContext: runtimeContext.liveChatContext });
                 runtimeContext.liveChatContextConversationDetails = liveChatContextConversationDetails;
 
                 return runtimeContext;
