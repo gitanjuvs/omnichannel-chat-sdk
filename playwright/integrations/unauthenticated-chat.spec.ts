@@ -8,7 +8,7 @@ const testPage = fetchTestPageUrl();
 const omnichannelConfig = fetchOmnichannelConfig('UnauthenticatedChat');
 
 test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
-    test.only('ChatSDK.getConversationDetails() should not fail', async ({page}) => {
+    test('ChatSDK.getConversationDetails() should not fail', async ({page}) => {
         await page.goto(testPage);
         console.log(testPage);
         console.log(omnichannelConfig);
