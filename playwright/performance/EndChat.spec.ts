@@ -1,31 +1,31 @@
-import OmnichannelEndpoints from '../utils/OmnichannelEndpoints';
 import fetchOmnichannelConfig from '../utils/fetchOmnichannelConfig';
 import fetchTestPageUrl from '../utils/fetchTestPageUrl';
 import { test, expect } from '@playwright/test';
+import OmnichannelEndpoints from '../utils/OmnichannelEndpoints';
 import { createPerformanceData, PerformanceTestResult, performanceData } from '../utils/PerformanceTests';
 
 const testPage = fetchTestPageUrl();
 const omnichannelConfig = fetchOmnichannelConfig('UnauthenticatedChat');
+
 let performanceDataTest: performanceData;
-let performanceDataTestCol: performanceData[] = [];
+let performanceTestData: performanceData[] = [];
+
 test.afterEach(() => {
-    performanceDataTestCol.push(performanceDataTest);
+    performanceTestData.push(performanceDataTest);
 });
 
 test.afterAll(async () => {
-    await PerformanceTestResult(performanceDataTestCol);
+    await PerformanceTestResult(performanceTestData);
 });
 
 test.describe('Performance @Performance', () => {
-    const threshold = 2000;
-    test('ChatSDK.startChat()', async ({ page }) => {
+    test('ChatSDK.endChat()', async ({ page }) => {
+        const threshold = 2000;
         await page.goto(testPage);
-        console.log(testPage);
-        console.log(omnichannelConfig);
-
-        const [chatTokenResponse, runtimeContext] = await Promise.all([
+        
+        let [response, runtimeContext ] = await Promise.all([
             page.waitForResponse(response => {
-                return response.url().includes(OmnichannelEndpoints.LiveChatv2GetChatTokenPath);
+                return response.url().includes(OmnichannelEndpoints.LiveChatSessionClosePath);
             }),
             await page.evaluate(async ({ omnichannelConfig }) => {
                 const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
@@ -33,8 +33,10 @@ test.describe('Performance @Performance', () => {
 
                 await chatSDK.initialize();
 
-                let startTime = new Date();
                 await chatSDK.startChat();
+                
+                let startTime = new Date();
+                await chatSDK.endChat();
                 let endTime = new Date();
                 let timeTaken = endTime.getTime() - startTime.getTime();
 
@@ -42,20 +44,15 @@ test.describe('Performance @Performance', () => {
                     timeTaken: timeTaken
                 };
 
-                await chatSDK.endChat();
-
                 return runtimeContext;
             }, { omnichannelConfig })
         ]);
 
-        const { timeTaken } = runtimeContext;
-        console.log("chatSDK.startChat(): " + timeTaken);
+        console.log("chatSDK.endChat(): " + runtimeContext.timeTaken);
+        expect(response.status()).toBe(200);
 
-        expect(chatTokenResponse.status()).toBe(200);
-
-         // Explicitly define the type of the 'data' variable
-         const executionTime = runtimeContext.timeTaken;
-         const data: PerformanceData = createPerformanceData("chatSDK.startChat()", executionTime, threshold);
-         performanceDataTest = data;
+        const executionTime = runtimeContext.timeTaken;
+        const data: performanceData = createPerformanceData("chatSDK.endChat()", executionTime, threshold);
+        performanceDataTest = data; 
     });
 });
