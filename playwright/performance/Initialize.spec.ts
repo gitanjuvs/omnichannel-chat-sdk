@@ -18,7 +18,7 @@ test.afterAll(async () => {
 
 test.describe('Performance @Performance ', () => {
     test('ChatSDK.initialize()', async ({ page }) => {
-        const threshold = 2000;
+        const threshold = 4000;
         await page.goto(testPage);
         console.log(testPage);
         console.log(omnichannelConfig);

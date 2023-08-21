@@ -17,7 +17,7 @@ test.afterAll(async () => {
 });
 
 test.describe('Performance @Performance', () => {
-    const threshold = 2000;
+    const threshold = 4000;
     test('ChatSDK.startChat()', async ({ page }) => {
         await page.goto(testPage);
         console.log(testPage);

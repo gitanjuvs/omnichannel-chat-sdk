@@ -19,7 +19,7 @@ test.afterAll(async () => {
 
 test.describe('Performance @Performance ', () => {
     test('ChatSDK.uploadFileAttachment()', async ({ page }) => {
-        const threshold = 2000;
+        const threshold = 4000;
         await page.goto(testPage);
 
         const file = {

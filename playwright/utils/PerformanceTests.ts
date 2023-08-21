@@ -6,6 +6,7 @@ interface PerformanceData {
   DateofRun: string;
   Threshold: number;
   ExecutionTime: number;
+  ScenarioType: string;
 }
 
 export async function PerformanceTestResult(performanceDataTestCol) {
@@ -25,7 +26,7 @@ export async function PerformanceTestResult(performanceDataTestCol) {
 }
 
 export function createPerformanceData(Sceanrio: string, executionTime: number, threshold: number): PerformanceData {
-
+  const type = "ChatSDK";
   const currentDate = new Date();
   const formattedDate = format(currentDate, 'yyyy-MM-dd hh:mm a');
   
@@ -34,6 +35,7 @@ export function createPerformanceData(Sceanrio: string, executionTime: number, t
       "DateofRun": formattedDate,
       "Threshold": threshold,
       "ExecutionTime": executionTime,
+      "ScenarioType": type
     };
   
     console.log("Performance data created", data);
