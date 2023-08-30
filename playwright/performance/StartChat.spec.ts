@@ -2,13 +2,26 @@ import OmnichannelEndpoints from '../utils/OmnichannelEndpoints';
 import fetchOmnichannelConfig from '../utils/fetchOmnichannelConfig';
 import fetchTestPageUrl from '../utils/fetchTestPageUrl';
 import { test, expect } from '@playwright/test';
+import { createPerformanceData, PerformanceTestResult, performanceData } from '../utils/PerformanceTests';
 
 const testPage = fetchTestPageUrl();
 const omnichannelConfig = fetchOmnichannelConfig('UnauthenticatedChat');
+let performanceDataTest: performanceData;
+let performanceDataTestCol: performanceData[] = [];
+test.afterEach(() => {
+    performanceDataTestCol.push(performanceDataTest);
+});
+
+test.afterAll(async () => {
+    await PerformanceTestResult(performanceDataTestCol);
+});
 
 test.describe('Performance @Performance', () => {
+    const threshold = 4000;
     test('ChatSDK.startChat()', async ({ page }) => {
         await page.goto(testPage);
+        console.log(testPage);
+        console.log(omnichannelConfig);
 
         const [chatTokenResponse, runtimeContext] = await Promise.all([
             page.waitForResponse(response => {
@@ -39,5 +52,10 @@ test.describe('Performance @Performance', () => {
         console.log("chatSDK.startChat(): " + timeTaken);
 
         expect(chatTokenResponse.status()).toBe(200);
+
+         // Explicitly define the type of the 'data' variable
+         const executionTime = runtimeContext.timeTaken;
+         const data: PerformanceData = createPerformanceData("chatSDK.startChat()", executionTime, threshold);
+         performanceDataTest = data;
     });
 });

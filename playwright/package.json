@@ -6,7 +6,8 @@
   "scripts": {
     "build:babel": "babel ../lib -d dist",
     "build:esbuild": "node esbuild.config.js",
-    "test:integrations": "npx playwright test -c playwright.config.ts"
+    "test:integrations": "npx playwright test --project=integrations",
+    "test:performance": "npx playwright test --project=performance"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -19,5 +20,8 @@
     "@playwright/test": "^1.28.1",
     "esbuild": "^0.15.16",
     "yaml": "^2.2.2"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
   }
 }

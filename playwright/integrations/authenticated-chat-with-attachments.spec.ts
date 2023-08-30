@@ -13,6 +13,8 @@ test.describe('AuthenticatedChat @AuthenticatedChatWithAttachments', () => {
     test('ChatSDK.uploadFileAttachment() should upload attachment to the attachment service & send a message with the metadata', async ({ page }) => {
         await page.goto(testPage);
 
+        console.log(testPage);
+
         const [uploadImageRequest, uploadImageResponse, sendMessageRequest, sendMessageResponse, runtimeContext] = await Promise.all([
             page.waitForRequest(request => {
                 return request.url().includes(AMSEndpoints.rootDomain) && request.url().match(AMSEndpoints.uploadImagePattern)?.length >= 0;

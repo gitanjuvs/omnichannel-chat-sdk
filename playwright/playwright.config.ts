@@ -1,9 +1,11 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
+import path from "path";
+const outPutDir = path.join(".", "generated/tests");
+const jUnitTestResults = path.join(outPutDir, "test-results/test-results.xml");
 
 const config: PlaywrightTestConfig = {
   globalSetup: require.resolve('./global-setup'),
-  testDir: './integrations',
   webServer: [
     {
       command: 'node ./server/app.js',
@@ -16,17 +18,21 @@ const config: PlaywrightTestConfig = {
   expect: {
     timeout: 5000
   },
+  outputDir: process.env.OUTPUTDIR || outPutDir,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : 1,
   reporter: [
-    ['html', {outputFolder: 'integrations-report'}]
+    ['html', {outputFolder: 'integrations-report'}],
+    ["junit", { outputFile: jUnitTestResults }]
   ],
   use: {
     headless: true,
     actionTimeout: 0,
     trace: 'on-first-retry',
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
     launchOptions: {
       slowMo: parseInt(process.env.PLAYWRIGHT_SLOW_MO || 1000)
     }
@@ -37,6 +43,14 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chrome'],
       },
+    },
+    {
+      name: 'integrations',
+      testDir: './integrations'
+    },
+    {
+      name: 'performance',
+      testDir: './performance'
     },
 
     // {
