@@ -21,12 +21,14 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath);
             }),
             await page.evaluate(async ({ omnichannelConfig }) => {
-                const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
+                const { OmnichannelChatSDK_1: OmnichannelChatSDK, sleep } = window;
                 const chatSDK = new OmnichannelChatSDK.default(omnichannelConfig);
 
                 await chatSDK.initialize();
 
                 await chatSDK.startChat();
+
+                await sleep(5000);
 
                 const conversationDetails = await chatSDK.getConversationDetails();
 
