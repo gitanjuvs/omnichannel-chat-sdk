@@ -28,7 +28,7 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
                 await chatSDK.startChat();
 
-                // await sleep(5000);
+                await sleep(5000);
 
                 const conversationDetails = await chatSDK.getConversationDetails();
 
