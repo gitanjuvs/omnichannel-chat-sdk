@@ -238,7 +238,7 @@ test.describe.only('AuthenticatedChat @AuthenticatedChat', () => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath);
             }),
             await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
-                const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
+                const { OmnichannelChatSDK_1: OmnichannelChatSDK, sleep } = window;
                 const payload = {
                     method: "POST"
                 };
@@ -254,6 +254,8 @@ test.describe.only('AuthenticatedChat @AuthenticatedChat', () => {
                 await chatSDK.initialize();
 
                 await chatSDK.startChat();
+
+                await sleep(3000); // wait to get conversation details
 
                 const conversationDetails = await chatSDK.getConversationDetails();
 
