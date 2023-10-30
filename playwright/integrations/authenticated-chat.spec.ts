@@ -8,7 +8,7 @@ const testPage = fetchTestPageUrl();
 const omnichannelConfig = fetchOmnichannelConfig('AuthenticatedChat');
 const authUrl = fetchAuthUrl('AuthenticatedChat');
 
-test.describe('AuthenticatedChat @AuthenticatedChat', () => {
+test.describe.only('AuthenticatedChat @AuthenticatedChat', () => {
     test('ChatSDK.startChat() should fetch the chat token & perform session init', async ({ page }) => {
         await page.goto(testPage);
 
