@@ -190,7 +190,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatAuthSessionClosePath);
             }),
             await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
-                const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
+                const { OmnichannelChatSDK_1: OmnichannelChatSDK, sleep } = window;
 
                 const payload = {
                     method: "POST"
@@ -216,6 +216,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 await chatSDK.startChat();
 
                 await chatSDK.endChat();
+
+                await sleep(3000); // wait for session close
 
                 return runtimeContext;
             }, { omnichannelConfig, authUrl })
