@@ -44,6 +44,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 await chatSDK.initialize();
 
                 const runtimeContext = {
+                    orgUrl: chatSDK.omnichannelConfig.orgUrl,
                     requestId: chatSDK.requestId,
                     authToken
                 };
@@ -57,8 +58,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         ]);
 
         const { requestId, authToken } = runtimeContext;
-        const chatTokenRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatv2AuthGetChatTokenPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
-        const sessionInitRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatAuthSessionInitPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        const chatTokenRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatv2AuthGetChatTokenPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        const sessionInitRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthSessionInitPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
 
         const chatTokenRequestHeaders = chatTokenRequest.headers();
         const sessionInitRequestHeaders = sessionInitRequest.headers();
@@ -105,6 +106,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 const liveChatContext = await chatSDK.getCurrentLiveChatContext();
 
                 const runtimeContext = {
+                    orgUrl: chatSDK.omnichannelConfig.orgUrl,
                     runtimeIdFirstSession: chatSDK.runtimeId,
                     requestIdFirstSession: chatSDK.requestId,
                     liveChatContext,
@@ -159,8 +161,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         ]);
 
         const { requestIdFirstSession: requestId, authToken } = runtimeContext;
-        const liveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
-        const authChatMapRecordRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatAuthChatMapRecord}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}`;
+        const liveWorkItemDetailsRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        const authChatMapRecordRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthChatMapRecord}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}`;
         const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
         const sessionInitCalls = requestUrls.filter((url) => url.includes(OmnichannelEndpoints.LiveChatAuthSessionInitPath));
 
@@ -206,6 +208,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 await chatSDK.initialize();
 
                 const runtimeContext = {
+                    orgUrl: chatSDK.omnichannelConfig.orgUrl,
                     requestId: chatSDK.requestId,
                     authToken
                 };
@@ -219,7 +222,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         ]);
 
         const { requestId, authToken } = runtimeContext;
-        const sessionCloseRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatAuthSessionClosePath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        const sessionCloseRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthSessionClosePath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
         const sessionCloseRequestHeaders = sessionCloseRequest.headers();
 
         expect(sessionCloseRequest.url() === sessionCloseRequestUrl).toBe(true);
@@ -260,6 +263,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 const conversationDetails = await chatSDK.getConversationDetails();
 
                 const runtimeContext = {
+                    orgUrl: chatSDK.omnichannelConfig.orgUrl,
                     requestId: chatSDK.requestId,
                     conversationDetails
                 };
@@ -270,7 +274,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         ]);
 
         const { requestId, conversationDetails } = runtimeContext;
-        const liveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        const liveWorkItemDetailsRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
         const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
 
         expect(liveWorkItemDetailsRequest.url() === liveWorkItemDetailsRequestUrl).toBe(true);
@@ -313,6 +317,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 const liveChatContext = await chatSDK.getCurrentLiveChatContext();
 
                 const runtimeContext = {
+                    orgUrl: chatSDK.omnichannelConfig.orgUrl,
                     liveChatContext
                 };
 
@@ -358,8 +363,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         ]);
 
         const { invalidRequestId, liveChatContext, invalidRequestIdConversationDetails, liveChatContextConversationDetails, authToken } = runtimeContext;
-        const invalidLiveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${invalidRequestId}?channelId=lcw`;
-        const liveChatContextLiveWorkItemDetailsRequestUrl = `${omnichannelConfig.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${liveChatContext.requestId}?channelId=lcw`;
+        const invalidLiveWorkItemDetailsRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${invalidRequestId}?channelId=lcw`;
+        const liveChatContextLiveWorkItemDetailsRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${liveChatContext.requestId}?channelId=lcw`;
 
         const liveChatContextLiveWorkItemDetailsRequestHeaders = liveChatContextLiveWorkItemDetailsRequest.headers();
 
