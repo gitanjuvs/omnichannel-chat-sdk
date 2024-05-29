@@ -190,7 +190,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatAuthSessionClosePath);
             }),
             await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
-                const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
+                const { OmnichannelChatSDK_1: OmnichannelChatSDK, sleep } = window;
 
                 const payload = {
                     method: "POST"
@@ -217,6 +217,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
                 await chatSDK.endChat();
 
+                sleep(3000); // wait for session close to complete
+
                 return runtimeContext;
             }, { omnichannelConfig, authUrl })
         ]);
@@ -241,7 +243,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath);
             }),
             await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
-                const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
+                const { OmnichannelChatSDK_1: OmnichannelChatSDK, sleep } = window;
                 const payload = {
                     method: "POST"
                 };
@@ -258,6 +260,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
                 await chatSDK.startChat();
 
+                await sleep(3000); // wait to get conversation details
+
                 const conversationDetails = await chatSDK.getConversationDetails();
 
                 const runtimeContext = {
@@ -273,6 +277,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
         const { requestId, conversationDetails } = runtimeContext;
         const liveWorkItemDetailsRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        console.log(liveWorkItemDetailsRequestUrl);
         const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
 
         expect(liveWorkItemDetailsRequest.url() === liveWorkItemDetailsRequestUrl).toBe(true);
