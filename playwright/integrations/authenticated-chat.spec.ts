@@ -179,7 +179,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         expect(liveChatMapRecordRequestHeaders['authenticatedusertoken']).toBe(authToken);
     });
 
-    test('ChatSDK.endChat() should perform session close', async ({ page }) => {
+    test.only('ChatSDK.endChat() should perform session close', async ({ page }) => {
         await page.goto(testPage);
 
         const [sessionCloseRequest, sessionCloseResponse, runtimeContext] = await Promise.all([
@@ -225,8 +225,17 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
         const { requestId, authToken } = runtimeContext;
         const sessionCloseRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthSessionClosePath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
-        console.log("sessionCloseRequestUrl:"+sessionCloseRequestUrl);
         const sessionCloseRequestHeaders = sessionCloseRequest.headers();
+
+         // Log request details
+        console.log(`Request URL: ${sessionCloseRequestUrl}`);
+        console.log(`Request headers: ${JSON.stringify(sessionCloseResponse.request().headers())}`);
+        console.log(`Request data: ${JSON.stringify(sessionCloseResponse.request().postData())}`);
+
+        // Log response details
+        console.log(`Response status: ${sessionCloseResponse.status()}`);
+        console.log(`Response headers: ${JSON.stringify(sessionCloseResponse.headers())}`);
+        console.log(`Response body: ${await sessionCloseResponse.text()}`);
 
         expect(sessionCloseRequest.url() === sessionCloseRequestUrl).toBe(true);
         expect(sessionCloseResponse.status()).toBe(200);
