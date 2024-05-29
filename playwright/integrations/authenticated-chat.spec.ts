@@ -225,6 +225,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
         const { requestId, authToken } = runtimeContext;
         const sessionCloseRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthSessionClosePath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        console.log("sessionCloseRequestUrl:"+sessionCloseRequestUrl);
         const sessionCloseRequestHeaders = sessionCloseRequest.headers();
 
         expect(sessionCloseRequest.url() === sessionCloseRequestUrl).toBe(true);
@@ -277,6 +278,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
         const { requestId, conversationDetails } = runtimeContext;
         const liveWorkItemDetailsRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
+        console.log("liveWorkItemDetailsRequestUrl:"+liveWorkItemDetailsRequestUrl);
         const liveWorkItemDetailsResponseDataJson = await liveWorkItemDetailsResponse.json();
 
         expect(liveWorkItemDetailsRequest.url() === liveWorkItemDetailsRequestUrl).toBe(true);
