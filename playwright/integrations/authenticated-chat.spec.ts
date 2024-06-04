@@ -12,7 +12,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
     test('ChatSDK.endChat() should perform session close', async ({ page }) => {
         await page.goto(testPage);
-        console.log(JSON.stringify(omnichannelConfig)+", AuthURL: "+authUrl);
+        console.log(JSON.stringify(omnichannelConfig) + ", AuthURL: " + authUrl);
 
         const [sessionCloseRequest, sessionCloseResponse, runtimeContext] = await Promise.all([
             page.waitForRequest(request => {
@@ -22,7 +22,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatAuthSessionClosePath);
             }),
             await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
-                const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
+                const { OmnichannelChatSDK_1: OmnichannelChatSDK, sleep } = window;
 
                 const payload = {
                     method: "POST"
@@ -49,13 +49,16 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
                 await chatSDK.endChat();
 
+                await sleep(5000);
+
                 return runtimeContext;
             }, { omnichannelConfig, authUrl })
         ]);
 
         const { requestId, authToken } = runtimeContext;
+        console.log(requestId, authToken);
         const sessionCloseRequestUrl = `${runtimeContext.orgUrl}/${OmnichannelEndpoints.LiveChatAuthSessionClosePath}/${omnichannelConfig.orgId}/${omnichannelConfig.widgetId}/${requestId}?channelId=lcw`;
-   
+
         expect(sessionCloseRequest.url() === sessionCloseRequestUrl).toBe(true);
         expect(sessionCloseResponse.status()).toBe(200);
         const sessionCloseRequestHeaders = sessionCloseRequest.headers();
