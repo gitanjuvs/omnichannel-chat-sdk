@@ -47,6 +47,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
                 await chatSDK.startChat();
 
+                await sleep(5000);
+
                 await chatSDK.endChat();
 
                 await sleep(5000);
