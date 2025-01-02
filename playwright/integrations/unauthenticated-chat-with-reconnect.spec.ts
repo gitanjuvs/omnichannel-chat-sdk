@@ -49,6 +49,8 @@ test.describe('UnauthenticatedChat @UnauthenticatedChatWithChatReconnect', () =>
 
                 await chatSDK.initialize();
 
+                await sleep(chatDuration);
+
                 const chatReconnectContext = await chatSDK.getChatReconnectContext(params);
                 runtimeContext.orgUrl = chatSDK.omnichannelConfig.orgUrl;
                 runtimeContext.reconnectId = chatReconnectContext.reconnectId;
