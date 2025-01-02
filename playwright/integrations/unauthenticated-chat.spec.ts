@@ -204,8 +204,6 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
                 const liveChatContext = await chatSDK.getCurrentLiveChatContext();
 
-                await sleep(chatDuration);
-
                 await chatSDK.endChat();
 
                 await sleep(chatDuration); // Sleep to avoid race condition
@@ -236,13 +234,16 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
         });
 
         const [_, liveWorkItemDetailsRequest, liveWorkItemDetailsResponse, runtimeContext] = await Promise.all([
-            await page.evaluate(async ({ omnichannelConfig }) => {
+            await page.evaluate(async ({ omnichannelConfig, chatDuration }) => {
+                const { sleep } = window;
                 const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
                 const chatSDK = new OmnichannelChatSDK.default(omnichannelConfig);
 
                 await chatSDK.initialize();
 
                 await chatSDK.startChat();
+
+                await sleep(chatDuration);
 
                 const liveChatContext = await chatSDK.getCurrentLiveChatContext();
 
@@ -254,7 +255,7 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
                 };
 
                 (window as any).runtimeContext = runtimeContext;
-            }, { omnichannelConfig }),
+            }, { omnichannelConfig, chatDuration: testSettings.chatDuration }),
             page.waitForRequest(request => {
                 return request.url().includes(OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath);
             }),

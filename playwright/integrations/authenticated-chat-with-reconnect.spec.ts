@@ -402,14 +402,14 @@ test.describe('AuthenticatedChat @AuthenticatedChatWithChatReconnect', () => {
                 const chatSDK = new OmnichannelChatSDK.default(omnichannelConfig, chatSDKConfig);
                 await chatSDK.initialize();
 
-                await sleep(chatDuration);
-
                 const chatReconnectContext = await chatSDK.getChatReconnectContext();
                 const {reconnectId} = chatReconnectContext;
 
                 await chatSDK.startChat({reconnectId});
 
                 await chatSDK.initialize();
+
+                await sleep(chatDuration);
 
                 const conversationDetails = await chatSDK.getConversationDetails();
 
