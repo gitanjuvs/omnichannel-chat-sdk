@@ -88,8 +88,9 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         });
 
         const [_, liveWorkItemDetailsRequest, liveWorkItemDetailsResponse, liveChatMapRecordRequest, liveChatMapRecordResponse, runtimeContext] = await Promise.all([
-            await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
-                const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
+            await page.evaluate(async ({ omnichannelConfig, authUrl, chatDuration }) => {
+                const { sleep } = window;
+                const { OmnichannelChatSDK_1: OmnichannelChatSDK,  } = window;
 
                 const payload = {
                     method: "POST"
@@ -108,6 +109,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
 
                 await chatSDK.startChat();
 
+                await sleep(chatDuration);
+
                 const liveChatContext = await chatSDK.getCurrentLiveChatContext();
 
                 const runtimeContext = {
@@ -118,7 +121,7 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 };
 
                 (window as any).runtimeContext = runtimeContext;
-            }, { omnichannelConfig, authUrl }),
+            }, { omnichannelConfig, authUrl, chatDuration: testSettings.chatDuration }),
             page.waitForRequest(request => {
                 return request.url().includes(OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath);
             }),
@@ -149,6 +152,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                 const chatSDK = new OmnichannelChatSDK.default(omnichannelConfig, chatSDKConfig);
 
                 await chatSDK.initialize();
+
+                await sleep(chatDuration);
 
                 runtimeContext.runtimeIdSecondSession = chatSDK.runtimeId;
                 runtimeContext.requestIdSecondSession = chatSDK.requestId;
