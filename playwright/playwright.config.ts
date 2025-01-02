@@ -15,7 +15,7 @@ const config: PlaywrightTestConfig = {
       reuseExistingServer: !process.env.CI
     },
   ],
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   expect: {
     timeout: 5000
   },

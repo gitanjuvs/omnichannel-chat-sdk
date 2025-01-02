@@ -409,6 +409,8 @@ test.describe('AuthenticatedChat @AuthenticatedChatWithChatReconnect', () => {
 
                 await chatSDK.startChat({reconnectId});
 
+                await chatSDK.initialize();
+
                 const conversationDetails = await chatSDK.getConversationDetails();
 
                 const runtimeContext = {
