@@ -767,17 +767,19 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
             page.waitForResponse(response => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatLiveWorkItemDetailsPath);
             }),
-            await page.evaluate(async ({ omnichannelConfig }) => {
+            await page.evaluate(async ({ omnichannelConfig, chatDuration }) => {
+                const { sleep } = window;
                 const { OmnichannelChatSDK_1: OmnichannelChatSDK, runtimeContext } = window;
                 const chatSDK = new OmnichannelChatSDK.default(omnichannelConfig);
 
                 await chatSDK.initialize();
 
                 const liveChatContextConversationDetails = await chatSDK.getConversationDetails({liveChatContext: runtimeContext.liveChatContext});
+                await sleep(chatDuration);
                 runtimeContext.liveChatContextConversationDetails = liveChatContextConversationDetails;
 
                 return runtimeContext;
-            }, { omnichannelConfig }),
+            }, { omnichannelConfig, chatDuration: testSettings.chatDuration }),
         ]);
 
         const { invalidRequestId, liveChatContext, invalidRequestIdConversationDetails, liveChatContextConversationDetails } = runtimeContext;

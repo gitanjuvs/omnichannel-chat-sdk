@@ -88,7 +88,8 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
         });
 
         const [_, liveWorkItemDetailsRequest, liveWorkItemDetailsResponse, liveChatMapRecordRequest, liveChatMapRecordResponse, runtimeContext] = await Promise.all([
-            await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
+            await page.evaluate(async ({ omnichannelConfig, authUrl, chatDuration }) => {
+                const { sleep } = window;
                 const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
 
                 const payload = {
@@ -117,8 +118,10 @@ test.describe('AuthenticatedChat @AuthenticatedChat', () => {
                     liveChatContext,
                 };
 
+                await sleep(chatDuration);
+
                 (window as any).runtimeContext = runtimeContext;
-            }, { omnichannelConfig, authUrl }),
+            }, { omnichannelConfig, authUrl, chatDuration: testSettings.chatDuration }),
             page.waitForRequest(request => {
                 return request.url().includes(OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath);
             }),
