@@ -495,6 +495,8 @@ test.describe('AuthenticatedChat @AuthenticatedChatWithChatReconnect', () => {
 
                 await chatSDK.startChat({reconnectId});
 
+                await sleep(chatDuration);
+
                 const liveChatContext = await chatSDK.getCurrentLiveChatContext();
                 runtimeContext.liveChatContext = liveChatContext;
 
