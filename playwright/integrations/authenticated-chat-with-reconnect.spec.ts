@@ -383,7 +383,8 @@ test.describe('AuthenticatedChat @AuthenticatedChatWithChatReconnect', () => {
             page.waitForResponse(response => {
                 return response.url().includes(OmnichannelEndpoints.LiveChatAuthLiveWorkItemDetailsPath);
             }),
-            await page.evaluate(async ({ omnichannelConfig, authUrl }) => {
+            await page.evaluate(async ({ omnichannelConfig, authUrl, chatDuration }) => {
+                const { sleep } = window;
                 const { OmnichannelChatSDK_1: OmnichannelChatSDK } = window;
                 const payload = {
                     method: "POST"
@@ -407,6 +408,8 @@ test.describe('AuthenticatedChat @AuthenticatedChatWithChatReconnect', () => {
 
                 await chatSDK.startChat({reconnectId});
 
+                await sleep(chatDuration);
+
                 const conversationDetails = await chatSDK.getConversationDetails();
 
                 const runtimeContext = {
@@ -417,7 +420,7 @@ test.describe('AuthenticatedChat @AuthenticatedChatWithChatReconnect', () => {
                 };
 
                 return runtimeContext;
-            }, { omnichannelConfig, authUrl }),
+            }, { omnichannelConfig, authUrl, chatDuration: testSettings.chatDuration }),
         ]);
 
         const { requestId, reconnectId, conversationDetails } = runtimeContext;
