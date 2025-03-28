@@ -1,10 +1,11 @@
-import { ariaTelemetryKey } from '../config/settings';
+import { AWTEventData, AWTLogConfiguration, AWTLogManager, AWTLogger } from '../external/aria/webjs/AriaSDK';
+import { ic3ClientVersion } from '../config/settings';
+import { isBrowser, isReactNative } from '../utils/platform';
 import { AWTEventPriority } from '../external/aria/common/Enums';
-import { AWTLogManager, AWTLogger, AWTEventData, AWTLogConfiguration } from '../external/aria/webjs/AriaSDK';
 import LogLevel from '../telemetry/LogLevel';
 import ScenarioType from '../telemetry/ScenarioType';
-import { ic3ClientVersion, webChatACSAdapterVersion } from '../config/settings';
-import { isBrowser, isReactNative } from '../utils/platform';
+import { ariaTelemetryKey } from '../config/settings';
+import { version as ACSAdapterVersion } from '@microsoft/botframework-webchat-adapter-azure-communication-chat/package.json';
 
 interface BaseContract {
     ChatSDKRuntimeId: string;
@@ -820,7 +821,7 @@ class AriaTelemetry {
             Event: '',
             ExceptionDetails: '',
             ElapsedTimeInMilliseconds: '',
-            ACSAdapterVersion: webChatACSAdapterVersion
+            ACSAdapterVersion
         }
     }
 

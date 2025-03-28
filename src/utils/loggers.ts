@@ -1,3 +1,5 @@
+import { _exceptionDetailPIIKeys, redactPII } from "./loggerUtils";
+
 import { AWTEventData } from "../external/aria/webjs/AriaSDK";
 import AriaTelemetry from "../telemetry/AriaTelemetry";
 import ICallingSDKLogData from "../external/CallingSDK/ICallingSDKLogData";
@@ -5,6 +7,7 @@ import IIC3SDKLogData from "../external/IC3Client/IIC3SDKLogData";
 import IOCSDKLogData from "../external/OCSDK/IOCSDKLogData";
 import LogLevel from "../telemetry/LogLevel";
 import OmnichannelConfig from "../core/OmnichannelConfig";
+import { PrintableMessage } from "./printers/types/PrintableMessageType";
 import ScenarioMarker from "../telemetry/ScenarioMarker";
 import ScenarioType from "../telemetry/ScenarioType";
 
@@ -293,6 +296,16 @@ export class ACSClientLogger {
 
         this.scenarioMarker?.completeScenario(event, { ...baseProperties, ...additionalProperties });
     }
+
+    public recordIndividualEvent(event: string, source:string, additionalProperties: PrintableMessage): void {
+        const baseProperties = {
+            RequestId: this.requestId,
+            ChatId: this.chatId,
+            CustomProperties: JSON.stringify(additionalProperties),
+            Source: source
+        };
+        this.scenarioMarker?.singleRecord(event,  {...baseProperties} );
+    }
 }
 
 export class ACSAdapterLogger {
@@ -350,9 +363,19 @@ export class ACSAdapterLogger {
             ChatId: this.chatId
         };
 
+        if (event.CustomProperties) {
+            event.CustomProperties = JSON.stringify(redactPII(event.CustomProperties, false));
+        }
+        if (event.ExceptionDetails) {
+            event.ExceptionDetails = JSON.stringify(redactPII(event.ExceptionDetails, false, true, _exceptionDetailPIIKeys));
+        }
+        if (event.Description) {
+            event.Description = JSON.stringify(redactPII(event.Description, false, true));
+        }
+
         const additionalProperties: AWTEventData["properties"] = {
             ...event,
-            ExceptionDetails: event.ExceptionDetails ? JSON.stringify(event.ExceptionDetails) : '',
+            ExceptionDetails: event.ExceptionDetails || '',
         };
 
         switch (logLevel) {
@@ -398,6 +421,16 @@ export class ACSAdapterLogger {
             RequestId: this.requestId,
             ChatId: this.chatId
         };
+
+        if (additionalProperties.CustomProperties) {
+            additionalProperties.CustomProperties = JSON.stringify(redactPII(additionalProperties.CustomProperties, false));
+        }
+        if (additionalProperties.ExceptionDetails) {
+            additionalProperties.ExceptionDetails = JSON.stringify(redactPII(additionalProperties.ExceptionDetails, false, true, _exceptionDetailPIIKeys));
+        }
+        if (additionalProperties.Description) {
+            additionalProperties.Description = JSON.stringify(redactPII(additionalProperties.Description, false, true));
+        }
 
         this.scenarioMarker?.failScenario(event, { ...baseProperties, ...additionalProperties });
     }

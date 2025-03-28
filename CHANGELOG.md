@@ -4,6 +4,117 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.10.16] - 2025-03-27
+
+### Added
+- Added exception details for telemetry for SendMessage
+- Expose `OriginalMessageId` to `ChatSDK.onNewMessage()` to handle message ordering
+- Update `ChatSDK.sendMessage()` to return `OmnichannelMessage`
+
+### Changed
+- Uptake [@microsoft/ocsdk@0.5.13](https://www.npmjs.com/package/@microsoft/ocsdk/v/0.5.13)
+
+## [1.10.15] - 2025-03-11
+
+### Security
+
+- Uptake [@microsoft/ocsdk@0.5.12](https://www.npmjs.com/package/@microsoft/ocsdk/v/0.5.12)
+- Uptake [@microsoft/omnichannel-ic3core@0.1.5](https://www.npmjs.com/package/@microsoft/omnichannel-ic3core/v/0.1.5)
+
+### Added
+
+- Added support for createConversation api which eleminates need for 2 api's when starting a conversation.
+- Adding telemetry around receive message mechanisms, Rest, Websocket and Polling
+
+### Fixed
+
+- Additional types for stored timer Id.
+
+## [1.10.14] - 2025-03-06
+
+### Changed
+
+- Updated getLivechatTranscript livechatcontect check for persistent chat
+
+### Added
+
+- Add check for getConversation details before call onAgentEndSession call back since participant removed is not reliable
+
+## [1.10.13] - 2025-03-04
+
+### Added
+
+- Add `disablePolling` flag for `onNewMessage` to stop polling
+
+### Changed
+
+- Updake [@microsoft/botframework-webchat-adapter-azure-communication-chat@0.0.1-beta.2](https://www.npmjs.com/package/@microsoft/botframework-webchat-adapter-azure-communication-chat/v/0.0.1-beta.2)
+
+### Fixed
+
+- Update `ACSAdapterVersion` to reflect the correct version
+
+## [1.10.12] - 2025-02-21
+
+### Added
+
+- Enabling LongPolling to continue after websocket is set, to prevent messages lost. Polling will stop when conversation ends.
+- Added stopPolling method to stop the long polling when ending the chat.
+
+## [1.10.11] - 2025-02-20
+
+### Added
+
+- Reduce polling interval with exponential backoff
+
+## [1.10.10] - 2025-02-18
+
+### Changed
+
+- Uptake [@microsoft/omnichannel-amsclient@0.1.8](https://www.npmjs.com/package/@microsoft/omnichannel-amsclient/v/0.1.8)
+
+## [1.10.9] - 2025-02-06
+
+### Changed
+
+- migrate [acs_webchat-chat-adapter@0.0.35-beta.30.1](https://www.npmjs.com/package/acs_webchat-chat-adapter/v/0.0.35-beta.30.1) to [@microsoft/botframework-webchat-adapter-azure-communication-chat@0.0.1-beta.1](https://www.npmjs.com/package/@microsoft/botframework-webchat-adapter-azure-communication-chat/v/0.0.1-beta.1)
+
+## [1.10.8] - 2025-02-05
+
+### Fixed
+
+- Fix `ChatSDK.onNewMessages()` calling `createOmnichannelMessages()` twice during polling
+
+### Changed
+
+- Uptake [@microsoft/omnichannel-amsclient@0.1.7](https://www.npmjs.com/package/@microsoft/omnichannel-amsclient/v/0.1.7)
+
+## [1.10.7] - 2025-01-30
+
+### Added
+
+- Added push notification properties to session init optional params
+
+## [1.10.6] - 2025-01-28
+
+### Added
+
+- Fix for ACS client preventing new messages from being populated in the new message callback.
+- Updated chat adapter dependecy ,also created new logic for PI data scrubbing
+
+## [1.10.5] - 2025-16-01
+
+### Added
+
+- Update of missing telemetry events for exposed API's
+- Adding exception details for telemetry for Email Transcript
+- Adding exception details for telemetry for GetMessages / SendMessages
+- Adding validation to exposed API's to require validations before to be executed.
+
+## Changed
+
+- Uptake [@microsoft/ocsdk@0.5.10](https://www.npmjs.com/package/@microsoft/ocsdk/v/0.5.10)
+
 ## [1.10.4] - 2024-12-19
 
 ### Fixed

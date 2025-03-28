@@ -3,7 +3,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const OmnichannelChatSDK = require('../src/OmnichannelChatSDK').default;
 
-import {  MaskingRule, MaskingRules, GetPreChatSurveyResponse } from "../src/types/response";
+import { GetPreChatSurveyResponse, MaskingRule, MaskingRules } from "../src/types/response";
 import { defaultLocaleId, getLocaleStringFromId } from "../src/utils/locale";
 
 import { AWTLogManager } from "../src/external/aria/webjs/AriaSDK";
@@ -1986,8 +1986,7 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             const chatSDK = new OmnichannelChatSDK(omnichannelConfig, chatSDKConfig);
             chatSDK.getChatConfig = jest.fn();
             chatSDK.isPersistentChat = true;
-            global.setInterval = jest.fn();
-
+            global.setInterval = jest.fn() as unknown as typeof setInterval;
             chatSDK.liveChatVersion = LiveChatVersion.V1;
 
             await chatSDK.initialize();
@@ -2888,68 +2887,6 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             expect(platform.isReactNative).toHaveBeenCalledTimes(1);
         });
 
-        it('[LiveChatV1] ChatSDK.onNewMessage() with rehydrate flag should call ChatSDK.getMessages()', async () => {
-            const chatSDK = new OmnichannelChatSDK(omnichannelConfig);
-            chatSDK.getChatConfig = jest.fn();
-            chatSDK.getChatToken = jest.fn();
-            chatSDK.liveChatVersion = LiveChatVersion.V1;
-
-            await chatSDK.initialize();
-
-            chatSDK.OCClient.sessionInit = jest.fn();
-            chatSDK.IC3Client.initialize = jest.fn();
-            chatSDK.IC3Client.joinConversation = jest.fn();
-
-            const messages = [
-                {clientmessageid: 2},
-                {clientmessageid: 1},
-                {clientmessageid: 1},
-                {clientmessageid: 0}
-            ]
-
-            await chatSDK.startChat();
-
-            chatSDK.conversation = {
-                registerOnNewMessage: jest.fn(),
-                getMessages: jest.fn()
-            };
-
-            jest.spyOn(chatSDK, 'getMessages').mockResolvedValue(messages);
-
-            await chatSDK.onNewMessage(() => {}, {rehydrate: true});
-
-            expect(chatSDK.getMessages).toHaveBeenCalledTimes(1);
-            expect(chatSDK.conversation.registerOnNewMessage).toHaveBeenCalledTimes(1);
-        });
-
-        it('[LiveChatV1] ChatSDK.onNewMessage() with rehydrate flag & with no messages should not break', async () => {
-            const chatSDK = new OmnichannelChatSDK(omnichannelConfig);
-            chatSDK.getChatConfig = jest.fn();
-            chatSDK.getChatToken = jest.fn();
-            chatSDK.liveChatVersion = LiveChatVersion.V1;
-
-            await chatSDK.initialize();
-
-            chatSDK.OCClient.sessionInit = jest.fn();
-            chatSDK.IC3Client.initialize = jest.fn();
-            chatSDK.IC3Client.joinConversation = jest.fn();
-
-            const messages = undefined;
-            await chatSDK.startChat();
-
-            chatSDK.conversation = {
-                registerOnNewMessage: jest.fn(),
-                getMessages: jest.fn()
-            };
-
-            jest.spyOn(chatSDK, 'getMessages').mockResolvedValue(messages);
-
-            await chatSDK.onNewMessage(() => {}, {rehydrate: true});
-
-            expect(chatSDK.getMessages).toHaveBeenCalledTimes(1);
-            expect(chatSDK.conversation.registerOnNewMessage).toHaveBeenCalledTimes(1);
-        });
-
         it('ChatSDK.onNewMessage() should call conversation.registerOnNewMessage()', async() => {
             const chatSDK = new OmnichannelChatSDK(omnichannelConfig);
             chatSDK.getChatConfig = jest.fn();
@@ -2974,6 +2911,35 @@ describe('Omnichannel Chat SDK, Sequential', () => {
 
             await chatSDK.onNewMessage(() => {});
 
+            expect(chatSDK.conversation.registerOnNewMessage.mock.calls[0][1].disablePolling).toBe(false);
+            expect(chatSDK.conversation.registerOnNewMessage).toHaveBeenCalledTimes(1);
+        });
+
+        it('ChatSDK.onNewMessage() with disablePolling flag should pass it to conversation.registerOnNewMessage()', async () => {
+            const chatSDK = new OmnichannelChatSDK(omnichannelConfig);
+            chatSDK.getChatConfig = jest.fn();
+            chatSDK.getChatToken = jest.fn();
+
+            await chatSDK.initialize();
+
+            chatSDK.OCClient = {
+                sessionInit: jest.fn()
+            }
+
+            chatSDK.AMSClient = {
+                initialize: jest.fn()
+            }
+
+            jest.spyOn(chatSDK.ACSClient, 'initialize').mockResolvedValue(Promise.resolve());
+            jest.spyOn(chatSDK.ACSClient, 'joinConversation').mockResolvedValue(Promise.resolve({
+                registerOnNewMessage: jest.fn()
+            }));
+
+            await chatSDK.startChat();
+
+            await chatSDK.onNewMessage(() => {}, {disablePolling: true});
+
+            expect(chatSDK.conversation.registerOnNewMessage.mock.calls[0][1].disablePolling).toBe(true);
             expect(chatSDK.conversation.registerOnNewMessage).toHaveBeenCalledTimes(1);
         });
 
@@ -3110,7 +3076,8 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             await chatSDK.startChat();
 
             chatSDK.conversation = {
-                disconnect: jest.fn()
+                disconnect: jest.fn(),
+                stopPolling: jest.fn()
             };
 
             const conversationDisconnectFn = jest.spyOn(chatSDK.conversation, 'disconnect');
@@ -3141,7 +3108,8 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             await chatSDK.startChat();
 
             chatSDK.conversation = {
-                disconnect: jest.fn()
+                disconnect: jest.fn(),
+                stopPolling: jest.fn()
             };
 
             const conversationDisconnectFn = jest.spyOn(chatSDK.conversation, 'disconnect');
@@ -3170,7 +3138,8 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             await chatSDK.startChat();
 
             chatSDK.conversation = {
-                disconnect: jest.fn()
+                disconnect: jest.fn(),
+                stopPolling: jest.fn()
             };
 
             const conversationDisconnectFn = jest.spyOn(chatSDK.conversation, 'disconnect');
@@ -3201,7 +3170,8 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             await chatSDK.startChat();
 
             chatSDK.conversation = {
-                disconnect: jest.fn()
+                disconnect: jest.fn(),
+                stopPolling: jest.fn()
             };
 
             const conversationDisconnectFn = jest.spyOn(chatSDK.conversation, 'disconnect');
@@ -3232,7 +3202,8 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             await chatSDK.startChat();
 
             chatSDK.conversation = {
-                disconnect: jest.fn()
+                disconnect: jest.fn(),
+                stopPolling: jest.fn()
             };
 
             const conversationDisconnectFn = jest.spyOn(chatSDK.conversation, 'disconnect');
@@ -3262,6 +3233,9 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             chatSDK.AMSClient.initialize = jest.fn();
 
             await chatSDK.startChat();
+            chatSDK.conversation = {
+                stopPolling: jest.fn()
+            };
 
             try {
                 await chatSDK.endChat();
@@ -3312,7 +3286,8 @@ describe('Omnichannel Chat SDK, Sequential', () => {
 
             chatSDK.authenticatedUserToken = optionalParams.authenticatedUserToken;
             chatSDK.conversation = {
-                disconnect: jest.fn()
+                disconnect: jest.fn(),
+                stopPolling: jest.fn()
             };
 
             const sessionCloseOptionalParams = {
@@ -3446,7 +3421,7 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             chatSDK.getChatToken = jest.fn();
             chatSDK.isPersistentChat = true;
             chatSDK.updateChatToken = jest.fn();
-            global.setInterval = jest.fn();
+            global.setInterval = jest.fn() as unknown as typeof setInterval;
 
             await chatSDK.initialize();
 
@@ -3484,7 +3459,7 @@ describe('Omnichannel Chat SDK, Sequential', () => {
             chatSDK.getChatToken = jest.fn();
             chatSDK.isPersistentChat = true;
             chatSDK.liveChatVersion = LiveChatVersion.V1;
-            global.setInterval = jest.fn();
+            global.setInterval = jest.fn() as unknown as typeof setInterval;
 
             await chatSDK.initialize();
 

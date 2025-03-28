@@ -39,3 +39,24 @@ export const getRuntimeId = (externalRuntimeId : string | null ): string => {
     }
     return uuidv4();
 }
+
+export const isJsonObject = (input: string) => {
+    try {
+        JSON.parse(input);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export const messageContentMetadata = (message: string): string => {
+    if (!message || message.length === 0) {
+        // If the message is empty or null, return '0'
+        return '0';
+    }
+    const first = message?.charAt(0);
+    const last = message?.charAt(message?.length - 1);
+    const size = message?.length;
+    return `${first}${size}${last}`;
+}
+
