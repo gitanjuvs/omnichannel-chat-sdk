@@ -248,6 +248,8 @@ test.describe('UnauthenticatedChat @UnauthenticatedChat', () => {
 
                 const liveChatContext = await chatSDK.getCurrentLiveChatContext();
 
+                await sleep(chatDuration);
+
                 const runtimeContext = {
                     orgUrl: chatSDK.omnichannelConfig.orgUrl,
                     runtimeIdFirstSession: chatSDK.runtimeId,
